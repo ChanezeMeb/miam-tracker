@@ -1,53 +1,76 @@
-# <!-- À COMPLÉTER : nom du projet -->
+# miam-tracker
 
-Application perso de suivi alimentaire et de poids, faite à deux pour notre propre usage.
+Application de suivi alimentaire et de poids, pensée pour nous deux et pour nos proches.
 
-> 🚧 Projet en cours de cadrage — la stack n'est pas encore choisie.
+> 🚧 Projet en cours de cadrage : l'architecture générale est choisie, plusieurs briques restent à trancher (voir « Encore à décider »).
 
 ## Objectif
 
-<!-- À COMPLÉTER : la vision en une phrase, ex. « Suivre ce qu'on mange et notre poids simplement, sans culpabiliser » -->
+<!-- À COMPLÉTER : la vision en une phrase, ex. « Suivre ce qu'on mange et son poids simplement, sans culpabiliser » -->
+
+Inspiration : ce qu'on aime dans MyFitnessPal, Yazio, Foodvisor, Lifesum, Lose It!, Cronometer… (benchmark à faire).
+
+## Utilisateurs et rôles
+
+- **admin** : nous deux. Gestion des comptes (ou des invitations) et des fonctions d'administration.
+- **user** : nos proches. Chacun crée son compte et ne voit que ses propres données.
 
 ## Fonctionnalités
 
-### MVP
-- [ ] Authentification (nos deux comptes)
+### MVP (à valider)
+- [ ] Inscription, connexion et rôles (`admin` / `user`)
 - [ ] Saisie du poids + historique en graphique
-- [ ] Saisie des repas (recherche d'aliments via Open Food Facts)
+- [ ] Saisie des repas avec recherche d'aliments via Open Food Facts
 - [ ] Tableau de bord du jour (calories / macros)
-- [ ] <!-- À COMPLÉTER -->
+- [ ] Espace admin minimal (gestion des comptes ou des invitations)
+- [ ] Données personnelles : consentement à l'inscription, suppression du compte et des données, page de confidentialité
 
 ### Plus tard
 - Scan de code-barres
-- <!-- À COMPLÉTER : idées piochées dans le benchmark -->
+- <!-- À COMPLÉTER : idées issues du benchmark -->
 
-## Stack (en cours de décision)
+## Stack
 
-**Option A, « rapide »** : Next.js (front + back) + Supabase (BDD, auth, RLS)
+**Architecture retenue (« comme au taff »)** : front React séparé + API Node.js séparée + PostgreSQL + ORM, le tout en TypeScript strict.
 
-**Option B, « comme au taff »** : front React (Vite) + API Node (Express / Fastify / NestJS) + PostgreSQL + ORM (Prisma / Drizzle)
+| Couche | Décision |
+|--------|----------|
+| Architecture | Front séparé + API Node.js séparée ✅ |
+| Langage | TypeScript (mode `strict`) ✅ |
+| Base de données | PostgreSQL ✅ |
+| Données nutritionnelles | [Open Food Facts](https://world.openfoodfacts.org/data) ✅ |
+| Validation des entrées | Zod (pressenti) |
 
-| Couche | Options | Décision |
-|--------|---------|----------|
-| Type d'application | PWA / appli native (Expo) | À décider |
-| Front | Next.js / React + Vite / Expo | À décider |
-| Back | Intégré à Next.js / API Node séparée | À décider |
-| Base de données | Supabase / PostgreSQL + Prisma / PostgreSQL + Drizzle | À décider |
-| Authentification | Supabase Auth / Auth.js / Better Auth / maison | À décider |
-| Style | Tailwind (+ shadcn/ui) / NativeWind | À décider |
-| Hébergement | Vercel / Render / Railway / Supabase | À décider |
-| Données nutritionnelles | [Open Food Facts](https://world.openfoodfacts.org/data) | Retenu ✅ |
-| Langage | TypeScript | Retenu ✅ |
+### Encore à décider
+
+| Sujet | Options |
+|-------|---------|
+| Type d'application | PWA (web installable) / appli native avec Expo |
+| Front | React + Vite (si PWA) / Expo (si natif) |
+| Framework API | Express / Fastify / NestJS (s'aligner si possible sur la stack du stage) |
+| ORM | Prisma / Drizzle |
+| Authentification | Better Auth / Auth.js / maison (JWT + refresh tokens) |
+| Style | Tailwind (+ shadcn/ui) / NativeWind (si Expo) |
+| Hébergement | Front : Vercel ou Netlify ; API + BDD : Render, Railway ou autre |
+| Structure du repo | Monorepo `apps/web` + `apps/api` (+ `packages/shared` pour les types) recommandé |
+| Inscription des proches | Libre / sur invitation par une admin (plus simple à sécuriser) |
 
 Les raisons de chaque choix seront notées dans `docs/decisions.md`.
 
+## Sécurité et données personnelles
+
+- Contrôle d'accès **côté API**, sur chaque route : vérification du rôle et de l'appartenance des données.
+- Mots de passe hachés (argon2 ou bcrypt), sessions ou tokens sécurisés, rate limiting sur la connexion, validation de toutes les entrées.
+- Le poids et l'alimentation sont des données sensibles (RGPD) : consentement explicite, suppression du compte et des données à la demande, page de confidentialité, collecte limitée au nécessaire.
+- Ce que les admins peuvent voir des données des autres utilisateurs : <!-- À COMPLÉTER -->
+
 ## Installation
 
-<!-- À COMPLÉTER une fois la stack choisie -->
+<!-- À COMPLÉTER une fois les choix restants faits -->
 
 ```bash
 git clone <!-- URL du repo -->
-cd <!-- nom du dossier -->
+cd miam-tracker
 # commandes d'installation et de lancement
 ```
 
@@ -67,5 +90,5 @@ cd <!-- nom du dossier -->
 
 ## Équipe
 
-- <!-- Prénom -->
-- <!-- Prénom -->
+- Chaneze
+- <!-- Prénom de la collègue -->
